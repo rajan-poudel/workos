@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:workos/constants/constants.dart';
+import 'package:workos/inner_screen/profile.dart';
+import 'package:workos/inner_screen/upload_task.dart';
+import 'package:workos/screens/all_workers.dart';
+import 'package:workos/screens/tasks_screen.dart';
 
 class DrawerWidget extends StatefulWidget {
   const DrawerWidget({Key? key}) : super(key: key);
@@ -46,22 +50,30 @@ class _DrawerWidgetState extends State<DrawerWidget> {
           ),
           _listTiles(
             label: 'All tasks',
-            fct: () {},
+            fct: () {
+              _navigateToAllTaskScreen(context);
+            },
             icon: Icons.task_outlined,
           ),
           _listTiles(
             label: 'My account',
-            fct: () {},
+            fct: () {
+              _navigateProfileScreen(context);
+            },
             icon: Icons.settings_outlined,
           ),
           _listTiles(
             label: 'Registered Workers',
-            fct: () {},
+            fct: () {
+              _navigateAllWorkersScreen(context);
+            },
             icon: Icons.workspaces_outline,
           ),
           _listTiles(
             label: 'Add Task',
-            fct: () {},
+            fct: () {
+              _navigateToAddTaskScreen(context);
+            },
             icon: Icons.add_task,
           ),
           const Divider(
@@ -96,6 +108,42 @@ class _DrawerWidgetState extends State<DrawerWidget> {
       onTap: () {
         fct();
       },
+    );
+  }
+
+  void _navigateToAllTaskScreen(context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TasksScreen(),
+      ),
+    );
+  }
+
+  void _navigateProfileScreen(context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ProfileScreen(),
+      ),
+    );
+  }
+
+  void _navigateAllWorkersScreen(context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AllWorkersScreen(),
+      ),
+    );
+  }
+
+  void _navigateToAddTaskScreen(context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => UploadTask(),
+      ),
     );
   }
 

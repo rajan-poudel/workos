@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:workos/constants/constants.dart';
 
-class TaskWidget extends StatefulWidget {
-  const TaskWidget({Key? key}) : super(key: key);
+class AllWorkersWidget extends StatefulWidget {
+  const AllWorkersWidget({Key? key}) : super(key: key);
 
   @override
-  _TaskWidgetState createState() => _TaskWidgetState();
+  _AllWorkersWidgetState createState() => _AllWorkersWidgetState();
 }
 
-class _TaskWidgetState extends State<TaskWidget> {
+class _AllWorkersWidgetState extends State<AllWorkersWidget> {
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -16,7 +16,6 @@ class _TaskWidgetState extends State<TaskWidget> {
       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       child: ListTile(
         onTap: () {},
-        onLongPress: _deleteDialog,
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         leading: Container(
@@ -28,14 +27,13 @@ class _TaskWidgetState extends State<TaskWidget> {
           ),
           child: CircleAvatar(
             backgroundColor: Colors.transparent,
-            radius:
-                20, //https://image.flaticon.com/icons/png/128/850/850960.png
+            radius: 20,
             child: Image.network(
-                'https://image.flaticon.com/icons/png/128/390/390973.png'),
+                'https://cdn.icon-icons.com/icons2/2643/PNG/512/male_boy_person_people_avatar_icon_159358.png'),
           ),
         ),
         title: Text(
-          'Title',
+          'Workers Name',
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
           style: TextStyle(
@@ -52,47 +50,22 @@ class _TaskWidgetState extends State<TaskWidget> {
               color: Colors.pink.shade800,
             ),
             const Text(
-              "Subtitle/Task Descriptions",
+              "positions/98456788388",
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(fontSize: 16),
             )
           ],
         ),
-        trailing: Icon(
-          Icons.keyboard_arrow_right,
-          size: 30,
-          color: Colors.pink.shade800,
+        trailing: IconButton(
+          onPressed: () {},
+          icon: Icon(
+            Icons.mail_outline,
+            size: 30,
+            color: Colors.pink.shade800,
+          ),
         ),
       ),
-    );
-  }
-
-  _deleteDialog() {
-    showDialog(
-      context: context,
-      builder: (ctx) {
-        return AlertDialog(
-          actions: [
-            TextButton(
-              onPressed: () {},
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Icon(
-                    Icons.delete,
-                    color: Colors.red,
-                  ),
-                  Text(
-                    "Delete",
-                    style: TextStyle(color: Colors.red),
-                  )
-                ],
-              ),
-            ),
-          ],
-        );
-      },
     );
   }
 }
