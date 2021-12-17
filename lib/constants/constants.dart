@@ -13,4 +13,13 @@ class Constants {
     'Design',
     'Accounting'
   ];
+
+  static List<String> jobsList = [
+    "Manager",
+    "Team Leader",
+    "Designer",
+    "Web Developer",
+    "Mobile App Developer",
+    "Full stack Developer"
+  ];
 }

@@ -1,6 +1,11 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:workos/constants/constants.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({Key? key}) : super(key: key);
@@ -18,15 +23,19 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
       TextEditingController(text: "");
   late TextEditingController _passTextContoller =
       TextEditingController(text: "");
+  late TextEditingController _phoneNumberContoller =
+      TextEditingController(text: "");
   late TextEditingController _positionCPTextContoller =
       TextEditingController(text: "");
 
   FocusNode _emailFocusNode = FocusNode();
   FocusNode _passFocusNode = FocusNode();
+  FocusNode _phoneNumberFocusNode = FocusNode();
   FocusNode _positionCPFocusNode = FocusNode();
 
   bool _obscureText = true;
   final _signUpFormKey = GlobalKey<FormState>();
+  File? imageFile;
 
   @override
   void dispose() {
@@ -34,10 +43,12 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
     _animationController.dispose();
     _emailTextController.dispose();
     _passTextContoller.dispose();
+    _phoneNumberContoller.dispose();
     _positionCPTextContoller.dispose();
     _emailFocusNode.dispose();
     _passFocusNode.dispose();
-    _passFocusNode.dispose();
+    _phoneNumberFocusNode.dispose();
+    _positionCPFocusNode.dispose();
     super.dispose();
   }
 
@@ -136,33 +147,94 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                   child: Column(
                     children: [
                       //fullname
-                      TextFormField(
-                        textInputAction: TextInputAction.next,
-                        onEditingComplete: () =>
-                            FocusScope.of(context).requestFocus(_passFocusNode),
-                        keyboardType: TextInputType.name,
-                        controller: _fullNameTextController,
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return "This field is missing";
-                          } else {
-                            return null;
-                          }
-                        },
-                        style: TextStyle(color: Colors.white),
-                        decoration: const InputDecoration(
-                          hintText: 'Full Name ',
-                          hintStyle: TextStyle(color: Colors.white),
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white),
+                      Row(
+                        children: [
+                          Flexible(
+                            flex: 2,
+                            child: TextFormField(
+                              textInputAction: TextInputAction.next,
+                              onEditingComplete: () => FocusScope.of(context)
+                                  .requestFocus(_passFocusNode),
+                              keyboardType: TextInputType.name,
+                              controller: _fullNameTextController,
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return "This field is missing";
+                                } else {
+                                  return null;
+                                }
+                              },
+                              style: TextStyle(color: Colors.white),
+                              decoration: const InputDecoration(
+                                hintText: 'Full Name ',
+                                hintStyle: TextStyle(color: Colors.white),
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.white),
+                                ),
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.white),
+                                ),
+                                errorBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.red),
+                                ),
+                              ),
+                            ),
                           ),
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white),
-                          ),
-                          errorBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.red),
-                          ),
-                        ),
+                          Stack(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Container(
+                                  height: size.width * 0.24,
+                                  width: size.width * 0.24,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                        width: 2, color: Colors.white),
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(16),
+                                    child: imageFile == null
+                                        ? Image.network(
+                                            "https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_1280.png",
+                                            fit: BoxFit.fill,
+                                          )
+                                        : Image.file(
+                                            imageFile!,
+                                            fit: BoxFit.fill,
+                                          ),
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                top: 0,
+                                right: 0,
+                                child: InkWell(
+                                  onTap: () {
+                                    _showImageDialog();
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            width: 2, color: Colors.white),
+                                        shape: BoxShape.circle,
+                                        color: Colors.red),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Icon(
+                                        imageFile == null
+                                            ? Icons.add_a_photo
+                                            : Icons.edit_outlined,
+                                        color: Colors.white,
+                                        size: 18,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              )
+                            ],
+                          )
+                        ],
                       ),
                       SizedBox(
                         height: 20,
@@ -204,7 +276,7 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                       TextFormField(
                         textInputAction: TextInputAction.next,
                         onEditingComplete: () => FocusScope.of(context)
-                            .requestFocus(_positionCPFocusNode),
+                            .requestFocus(_phoneNumberFocusNode),
                         focusNode: _passFocusNode,
                         obscureText: _obscureText,
                         keyboardType: TextInputType.visiblePassword,
@@ -248,13 +320,14 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                       SizedBox(
                         height: 15,
                       ),
-                      //position
+                      //phone number
                       TextFormField(
-                        textInputAction: TextInputAction.done,
-                        onEditingComplete: _submitFormOnSignUp,
-                        focusNode: _passFocusNode,
-                        keyboardType: TextInputType.name,
-                        controller: _positionCPTextContoller,
+                        focusNode: _phoneNumberFocusNode,
+                        textInputAction: TextInputAction.next,
+                        onEditingComplete: () => FocusScope.of(context)
+                            .requestFocus(_positionCPFocusNode),
+                        keyboardType: TextInputType.phone,
+                        controller: _phoneNumberContoller,
                         validator: (value) {
                           if (value!.isEmpty) {
                             return "This field is missing";
@@ -262,9 +335,12 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                             return null;
                           }
                         },
+                        onChanged: (v) {
+                          print("phone number : ${_phoneNumberContoller.text}");
+                        },
                         style: TextStyle(color: Colors.white),
                         decoration: const InputDecoration(
-                          hintText: 'Position in the company',
+                          hintText: 'Phone Number',
                           hintStyle: TextStyle(color: Colors.white),
                           enabledBorder: UnderlineInputBorder(
                             borderSide: BorderSide(color: Colors.white),
@@ -274,6 +350,47 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                           ),
                           errorBorder: UnderlineInputBorder(
                             borderSide: BorderSide(color: Colors.red),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      //position
+                      GestureDetector(
+                        onTap: () {
+                          _showTaskCategoriesDialog(size: size);
+                        },
+                        child: TextFormField(
+                          enabled: false,
+                          textInputAction: TextInputAction.done,
+                          onEditingComplete: _submitFormOnSignUp,
+                          focusNode: _passFocusNode,
+                          keyboardType: TextInputType.name,
+                          controller: _positionCPTextContoller,
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return "This field is missing";
+                            } else {
+                              return null;
+                            }
+                          },
+                          style: TextStyle(color: Colors.white),
+                          decoration: const InputDecoration(
+                            hintText: 'Position in the company',
+                            hintStyle: TextStyle(color: Colors.white),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white),
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white),
+                            ),
+                            errorBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.red),
+                            ),
+                            disabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white),
+                            ),
                           ),
                         ),
                       ),
@@ -317,6 +434,164 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
           )
         ],
       ),
+    );
+  }
+
+  void _showImageDialog() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Please choose an option"),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                InkWell(
+                  onTap: () {
+                    _getFromCamera();
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: Icon(
+                          Icons.camera,
+                          color: Colors.purple,
+                        ),
+                      ),
+                      Text(
+                        "Camera",
+                        style: TextStyle(color: Colors.purple),
+                      )
+                    ],
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    _getFromGallery();
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: Icon(
+                          Icons.image,
+                          color: Colors.purple,
+                        ),
+                      ),
+                      Text(
+                        "gallery",
+                        style: TextStyle(color: Colors.purple),
+                      )
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
+        });
+  }
+
+  void _getFromGallery() async {
+    XFile? pickedFile = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+      maxHeight: 1080,
+      maxWidth: 1080,
+    );
+    // setState(() {
+    //   imageFile = File(pickedFile!.path);
+    // });
+    _cropImage(pickedFile!.path);
+    Navigator.pop(context);
+  }
+
+  void _getFromCamera() async {
+    XFile? pickedFile = await ImagePicker().pickImage(
+      source: ImageSource.camera,
+      maxHeight: 1080,
+      maxWidth: 1080,
+    );
+    // setState(() {
+    //   imageFile = File(pickedFile!.path);
+    // });
+    _cropImage(pickedFile!.path);
+    Navigator.pop(context);
+  }
+
+  void _cropImage(filePath) async {
+    File? croppedImage = await ImageCropper.cropImage(
+      sourcePath: filePath,
+      maxHeight: 1080,
+      maxWidth: 1080,
+    );
+    if (croppedImage != null) {
+      imageFile = croppedImage;
+    }
+  }
+
+  void _showTaskCategoriesDialog({required Size size}) {
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          title: Row(
+            children: [
+              Text(
+                'Choose Your Jobs',
+                style: TextStyle(color: Colors.pink.shade800),
+              ),
+              Icon(Icons.arrow_downward_sharp)
+            ],
+          ),
+          content: Container(
+            width: size.width * 0.9,
+            child: ListView.builder(
+                itemCount: Constants.jobsList.length,
+                shrinkWrap:
+                    true, //yesle chai content anusar wrap garxa dherai khali thau xodna didaina
+                itemBuilder: (BuildContext context, int index) {
+                  return InkWell(
+                    onTap: () {
+                      setState(() {
+                        _positionCPTextContoller.text =
+                            Constants.jobsList[index];
+                      });
+                      Navigator.pop(context);
+                    },
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.check_box_rounded,
+                          color: Colors.red.shade200,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            Constants.jobsList[index],
+                            style: TextStyle(
+                              color: Constants.darkBlue,
+                              fontSize: 18,
+                              fontStyle: FontStyle.italic,
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  );
+                }),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.canPop(context) ? Navigator.pop(context) : null;
+              },
+              child: Text('Cancel'),
+            ),
+          ],
+        );
+      },
     );
   }
 }
