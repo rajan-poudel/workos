@@ -155,6 +155,13 @@ class _UploadTaskState extends State<UploadTask> {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
+                            SizedBox(
+                              width: 8,
+                            ),
+                            Icon(
+                              Icons.upload,
+                              color: Colors.white,
+                            )
                           ],
                         ),
                       ),

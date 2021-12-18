@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:workos/constants/constants.dart';
+import 'package:workos/inner_screen/task_details.dart';
 
 class TaskWidget extends StatefulWidget {
   const TaskWidget({Key? key}) : super(key: key);
@@ -15,7 +16,14 @@ class _TaskWidgetState extends State<TaskWidget> {
       elevation: 10,
       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       child: ListTile(
-        onTap: () {},
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => TaskDetailsScreen(),
+            ),
+          );
+        },
         onLongPress: _deleteDialog,
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 20, vertical: 10),

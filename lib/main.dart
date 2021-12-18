@@ -19,6 +19,6 @@ class MyApp extends StatelessWidget {
           scaffoldBackgroundColor: Color(0xFFEDE7DC),
           primarySwatch: Colors.blue,
         ),
-        home: Login());
+        home: TasksScreen());
   }
 }
