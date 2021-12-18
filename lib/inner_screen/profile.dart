@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:workos/constants/constants.dart';
 import 'package:workos/widgets/drawer_widget.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -103,17 +104,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       children: [
                         contactBy(
                           color: Colors.green,
-                          fct: () {},
+                          fct: () {
+                            _openWhatsAppChat();
+                          },
                           icon: Icons.message,
                         ),
                         contactBy(
                           color: Colors.red,
-                          fct: () {},
+                          fct: () {
+                            _mailTo();
+                          },
                           icon: Icons.mail_outline,
                         ),
                         contactBy(
                           color: Colors.purple,
-                          fct: () {},
+                          fct: () {
+                            _callPhoneNumber();
+                          },
                           icon: Icons.call,
                         )
                       ],
@@ -192,6 +199,38 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       ),
     );
+  }
+
+  void _openWhatsAppChat() async {
+    String phoneNumber = "34567890";
+    var url = 'https://wa.me/$phoneNumber?text=hello';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      print("error");
+      throw "Error Occur";
+    }
+  }
+
+  void _mailTo() async {
+    String email = "rajan@gmail.com";
+    var mailUrl = 'mailto:$email';
+    if (await canLaunch(mailUrl)) {
+      await launch(mailUrl);
+    } else {
+      print("error");
+      throw "Error Occur";
+    }
+  }
+
+  void _callPhoneNumber() async {
+    String phoneNumber = '98439228960';
+    var phoneUrl = 'tel:$phoneNumber';
+    if (await canLaunch(phoneUrl)) {
+      await launch(phoneUrl);
+    } else {
+      throw "error occured";
+    }
   }
 
   Widget contactBy(

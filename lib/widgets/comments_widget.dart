@@ -50,7 +50,7 @@ class CommentWidget extends StatelessWidget {
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontStyle: FontStyle.normal,
-                    fontSize: 20,
+                    fontSize: 18,
                   ),
                 ),
                 Text(
