@@ -5,6 +5,8 @@ import 'package:workos/inner_screen/profile.dart';
 import 'package:workos/inner_screen/upload_task.dart';
 import 'package:workos/screens/all_workers.dart';
 import 'package:workos/screens/tasks_screen.dart';
+import 'package:workos/services/global_method.dart';
+import 'package:workos/user_state.dart';
 
 class DrawerWidget extends StatefulWidget {
   const DrawerWidget({Key? key}) : super(key: key);
@@ -83,7 +85,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
           _listTiles(
             label: 'Logout',
             fct: () {
-              _logout(context);
+              GlobalMethod.logout(context);
             },
             icon: Icons.logout_outlined,
           ),
@@ -122,10 +124,15 @@ class _DrawerWidgetState extends State<DrawerWidget> {
   }
 
   void _navigateProfileScreen(context) {
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    final User? user = _auth.currentUser;
+    final String uid = user!.uid;
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ProfileScreen(),
+        builder: (context) => ProfileScreen(
+          userId: uid,
+        ),
       ),
     );
   }
@@ -145,59 +152,6 @@ class _DrawerWidgetState extends State<DrawerWidget> {
       MaterialPageRoute(
         builder: (context) => UploadTask(),
       ),
-    );
-  }
-
-  void _logout(context) {
-    final FirebaseAuth _auth = FirebaseAuth.instance;
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Row(
-            children: [
-              const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Icon(
-                  Icons.logout_rounded,
-                  color: Colors.red,
-                ),
-              ),
-              Text(
-                "Sign Out",
-                style: TextStyle(color: Colors.pink.shade800),
-              ),
-            ],
-          ),
-          elevation: 10,
-          content: const Text(
-            "Do You wanna Sign Out?",
-            style: TextStyle(
-              fontStyle: FontStyle.italic,
-              fontSize: 20,
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.canPop(context) ? Navigator.pop(context) : null;
-              },
-              child: const Text("Cancel"),
-            ),
-            TextButton(
-              onPressed: () {
-                _auth.signOut();
-
-                Navigator.canPop(context) ? Navigator.pop(context) : null;
-              },
-              child: const Text(
-                "OK",
-                style: TextStyle(color: Colors.red),
-              ),
-            ),
-          ],
-        );
-      },
     );
   }
 }

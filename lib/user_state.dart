@@ -4,23 +4,25 @@ import 'package:workos/screens/auth/login.dart';
 import 'package:workos/screens/tasks_screen.dart';
 
 class UserState extends StatelessWidget {
+  const UserState({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, userSnapshot) {
           if (userSnapshot.data == null) {
-            return Login();
+            return const Login();
           } else if (userSnapshot.hasData) {
-            return TasksScreen();
+            return const TasksScreen();
           } else if (userSnapshot.hasError) {
-            return Scaffold(
+            return const Scaffold(
               body: Center(
                 child: Text("an Error occured"),
               ),
             );
           } else if (userSnapshot.connectionState == ConnectionState.waiting) {
-            return MaterialApp(
+            return const MaterialApp(
               debugShowCheckedModeBanner: false,
               home: Scaffold(
                 body: Center(
@@ -29,7 +31,7 @@ class UserState extends StatelessWidget {
               ),
             );
           }
-          return Scaffold(
+          return const Scaffold(
             body: Center(
               child: Text("Something went wrong"),
             ),
