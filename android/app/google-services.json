@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "440377749655",
+    "project_id": "taskmanagement-1232b",
+    "storage_bucket": "taskmanagement-1232b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:440377749655:android:34a19e9b2678b22a33f9d2",
+        "android_client_info": {
+          "package_name": "com.example.workos"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "440377749655-4drlbv93g4s5tb7pf3j3vecgo5orvs73.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBItYj5T8I02VCII2k5XvnQkORyzm55_wQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "440377749655-4drlbv93g4s5tb7pf3j3vecgo5orvs73.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

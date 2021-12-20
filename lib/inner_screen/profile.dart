@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttericon/font_awesome_icons.dart';
 import 'package:workos/constants/constants.dart';
 import 'package:workos/widgets/drawer_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -107,7 +108,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           fct: () {
                             _openWhatsAppChat();
                           },
-                          icon: Icons.message,
+                          icon: FontAwesome.whatsapp,
                         ),
                         contactBy(
                           color: Colors.red,

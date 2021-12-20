@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:workos/constants/constants.dart';
 import 'package:workos/inner_screen/profile.dart';
@@ -148,6 +149,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
   }
 
   void _logout(context) {
+    final FirebaseAuth _auth = FirebaseAuth.instance;
     showDialog(
       context: context,
       builder: (context) {
@@ -183,7 +185,11 @@ class _DrawerWidgetState extends State<DrawerWidget> {
               child: const Text("Cancel"),
             ),
             TextButton(
-              onPressed: () {},
+              onPressed: () {
+                _auth.signOut();
+
+                Navigator.canPop(context) ? Navigator.pop(context) : null;
+              },
               child: const Text(
                 "OK",
                 style: TextStyle(color: Colors.red),

@@ -1,11 +1,15 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:workos/constants/constants.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:workos/services/global_method.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({Key? key}) : super(key: key);
@@ -36,6 +40,10 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
   bool _obscureText = true;
   final _signUpFormKey = GlobalKey<FormState>();
   File? imageFile;
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  bool _isLoading = false;
+  String? imageUrl;
 
   @override
   void dispose() {
@@ -71,9 +79,50 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
     super.initState();
   }
 
-  void _submitFormOnSignUp() {
+  void _submitFormOnSignUp() async {
     final isValid = _signUpFormKey.currentState!.validate();
-    if (isValid) {}
+    if (isValid) {
+      if (imageFile == null) {
+        GlobalMethod.showErrorDialog(
+            error: "please pickup an image", context: context);
+        return;
+      }
+      setState(() {
+        _isLoading = true;
+      });
+      try {
+        await _auth.createUserWithEmailAndPassword(
+            email: _emailTextController.text.trim().toLowerCase(),
+            password: _passTextContoller.text.trim());
+        final User? user = _auth.currentUser!;
+        final _uid = user!.uid;
+        final ref = FirebaseStorage.instance
+            .ref()
+            .child('userImages')
+            .child(_uid + '.jpg');
+        await ref.putFile(imageFile!);
+        imageUrl = await ref.getDownloadURL();
+        FirebaseFirestore.instance.collection('users').doc(_uid).set({
+          'id': _uid,
+          'name': _fullNameTextController.text,
+          'email': _emailTextController.text,
+          'userImage': imageUrl,
+          'phoneNumber': _phoneNumberContoller.text,
+          'positionCompany': _positionCPTextContoller.text,
+          'createdAt': Timestamp.now(),
+        });
+
+        Navigator.canPop(context) ? Navigator.pop(context) : null;
+      } catch (error) {
+        setState(() {
+          _isLoading = false;
+        });
+        GlobalMethod.showErrorDialog(error: error.toString(), context: context);
+      }
+    }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
@@ -274,16 +323,16 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                       ),
                       //password
                       TextFormField(
-                        textInputAction: TextInputAction.next,
-                        onEditingComplete: () => FocusScope.of(context)
-                            .requestFocus(_phoneNumberFocusNode),
-                        focusNode: _passFocusNode,
+                        // textInputAction: TextInputAction.next,
+                        // onEditingComplete: () => FocusScope.of(context)
+                        //     .requestFocus(_phoneNumberFocusNode),
+                        // focusNode: _passFocusNode,
                         obscureText: _obscureText,
-                        keyboardType: TextInputType.visiblePassword,
+                        keyboardType: TextInputType.text,
                         controller: _passTextContoller,
                         validator: (value) {
-                          if (value!.isEmpty || value.length < 8) {
-                            return "Email and password invalid";
+                          if (value!.isEmpty || value.length < 7) {
+                            return "Please enter a valid";
                           } else {
                             return null;
                           }
@@ -322,10 +371,10 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                       ),
                       //phone number
                       TextFormField(
-                        focusNode: _phoneNumberFocusNode,
                         textInputAction: TextInputAction.next,
                         onEditingComplete: () => FocusScope.of(context)
                             .requestFocus(_positionCPFocusNode),
+                        focusNode: _phoneNumberFocusNode,
                         keyboardType: TextInputType.phone,
                         controller: _phoneNumberContoller,
                         validator: (value) {
@@ -400,35 +449,41 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                 SizedBox(
                   height: 80,
                 ),
-                MaterialButton(
-                    color: Colors.pink.shade700,
-                    elevation: 8,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(13)),
-                    onPressed: _submitFormOnSignUp,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Text(
-                            "SignUp",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                            ),
+                _isLoading
+                    ? Center(
+                        child: Container(
+                          child: CircularProgressIndicator(),
+                        ),
+                      )
+                    : MaterialButton(
+                        color: Colors.pink.shade700,
+                        elevation: 8,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(13)),
+                        onPressed: _submitFormOnSignUp,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              Text(
+                                "SignUp",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Icon(
+                                Icons.person_add,
+                                color: Colors.white,
+                              )
+                            ],
                           ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Icon(
-                            Icons.person_add,
-                            color: Colors.white,
-                          )
-                        ],
-                      ),
-                    ))
+                        ))
               ],
             ),
           )

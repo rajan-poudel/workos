@@ -1,8 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:workos/screens/auth/forget_pass.dart';
 import 'package:workos/screens/auth/register.dart';
+import 'package:workos/services/global_method.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -23,6 +25,8 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
 
   bool _obscureText = true;
   final _loginFormKey = GlobalKey<FormState>();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -52,9 +56,27 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
     super.initState();
   }
 
-  void _submitFormOnLogin() {
+  void _submitFormOnLogin() async {
     final isValid = _loginFormKey.currentState!.validate();
-    if (isValid) {}
+    if (isValid) {
+      setState(() {
+        _isLoading = true;
+      });
+      try {
+        await _auth.signInWithEmailAndPassword(
+            email: _emailTextController.text.trim().toLowerCase(),
+            password: _passTextContoller.text.trim());
+        Navigator.canPop(context) ? Navigator.pop(context) : null;
+      } catch (error) {
+        setState(() {
+          _isLoading = false;
+        });
+        GlobalMethod.showErrorDialog(error: error.toString(), context: context);
+      }
+    }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
