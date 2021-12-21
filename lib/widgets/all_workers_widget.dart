@@ -1,9 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:workos/constants/constants.dart';
+import 'package:workos/inner_screen/profile.dart';
 
 class AllWorkersWidget extends StatefulWidget {
-  const AllWorkersWidget({Key? key}) : super(key: key);
+  final String userID;
+  final String userName;
+  final String userEmail;
+  final String positionInCompany;
+  final String phoneNumber;
+  final String userImageUrl;
 
+  const AllWorkersWidget(
+      {required this.userID,
+      required this.userName,
+      required this.userEmail,
+      required this.positionInCompany,
+      required this.phoneNumber,
+      required this.userImageUrl});
   @override
   _AllWorkersWidgetState createState() => _AllWorkersWidgetState();
 }
@@ -15,7 +29,16 @@ class _AllWorkersWidgetState extends State<AllWorkersWidget> {
       elevation: 10,
       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       child: ListTile(
-        onTap: () {},
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ProfileScreen(
+                userId: widget.userID,
+              ),
+            ),
+          );
+        },
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         leading: Container(
@@ -28,12 +51,13 @@ class _AllWorkersWidgetState extends State<AllWorkersWidget> {
           child: CircleAvatar(
             backgroundColor: Colors.transparent,
             radius: 20,
-            child: Image.network(
-                'https://cdn.icon-icons.com/icons2/2643/PNG/512/male_boy_person_people_avatar_icon_159358.png'),
+            child: Image.network(widget.userImageUrl == null
+                ? 'https://cdn.icon-icons.com/icons2/2643/PNG/512/male_boy_person_people_avatar_icon_159358.png'
+                : widget.userImageUrl),
           ),
         ),
         title: Text(
-          'Workers Name',
+          widget.userName,
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
           style: TextStyle(
@@ -49,8 +73,8 @@ class _AllWorkersWidgetState extends State<AllWorkersWidget> {
               Icons.linear_scale_outlined,
               color: Colors.pink.shade800,
             ),
-            const Text(
-              "positions/98456788388",
+            Text(
+              ' ${widget.positionInCompany}/${widget.phoneNumber}',
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(fontSize: 16),
@@ -58,7 +82,9 @@ class _AllWorkersWidgetState extends State<AllWorkersWidget> {
           ],
         ),
         trailing: IconButton(
-          onPressed: () {},
+          onPressed: () {
+            _mailTo();
+          },
           icon: Icon(
             Icons.mail_outline,
             size: 30,
@@ -67,5 +93,16 @@ class _AllWorkersWidgetState extends State<AllWorkersWidget> {
         ),
       ),
     );
+  }
+
+  void _mailTo() async {
+    var mailUrl = 'mailto:${widget.userEmail}';
+    print("User email :${widget.userEmail}");
+    if (await canLaunch(mailUrl)) {
+      await launch(mailUrl);
+    } else {
+      print("error");
+      throw "Error Occur";
+    }
   }
 }

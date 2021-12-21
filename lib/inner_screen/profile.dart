@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttericon/font_awesome_icons.dart';
 import 'package:workos/constants/constants.dart';
@@ -17,6 +18,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   @override
   void initState() {
     super.initState();
@@ -33,25 +35,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool _isSameUser = false;
 
   void getUserData() async {
-    _isLoading = true;
-    final DocumentSnapshot userDoc = await FirebaseFirestore.instance
-        .collection("users")
-        .doc(widget.userId)
-        .get();
-    if (userDoc == null) {
-      // GlobalMethod.showErrorDialog(error: "Fetching Error", context: context)
-      return;
-    } else {
-      setState(() {
-        name = userDoc.get("name");
-        email = userDoc.get("email");
-        phoneNumber = userDoc.get("phoneNumber");
-        job = userDoc.get("positionCompany");
-        imageUrl = userDoc.get("userImage");
-        Timestamp joinedAtTimestamp = userDoc.get('createdAt');
-        var joinedDate = joinedAtTimestamp.toDate();
-        joinedAt = '${joinedDate.year}-${joinedDate.month}-${joinedDate.day}';
-      });
+    try {
+      _isLoading = true;
+      final DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection("users")
+          .doc(widget.userId)
+          .get();
+      if (userDoc == null) {
+        // GlobalMethod.showErrorDialog(error: "Fetching Error", context: context)
+        return;
+      } else {
+        setState(() {
+          name = userDoc.get("name");
+          email = userDoc.get("email");
+          phoneNumber = userDoc.get("phoneNumber");
+          job = userDoc.get("positionCompany");
+          imageUrl = userDoc.get("userImage");
+          Timestamp joinedAtTimestamp = userDoc.get('createdAt');
+          var joinedDate = joinedAtTimestamp.toDate();
+          joinedAt = '${joinedDate.year}-${joinedDate.month}-${joinedDate.day}';
+        });
+        User? user = _auth.currentUser;
+        final _uid = user!.uid;
+        setState(() {
+          _isSameUser = _uid == widget.userId;
+        });
+      }
+    } catch (error) {
+    } finally {
       _isLoading = false;
     }
   }
@@ -142,83 +153,99 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           const SizedBox(
                             height: 15,
                           ),
-                          const Divider(thickness: 1),
+                          _isSameUser
+                              ? Container()
+                              : Divider(
+                                  thickness: 1,
+                                ),
                           const SizedBox(
                             height: 15,
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              contactBy(
-                                color: Colors.green,
-                                fct: () {
-                                  _openWhatsAppChat();
-                                },
-                                icon: FontAwesome.whatsapp,
-                              ),
-                              contactBy(
-                                color: Colors.red,
-                                fct: () {
-                                  _mailTo();
-                                },
-                                icon: Icons.mail_outline,
-                              ),
-                              contactBy(
-                                color: Colors.purple,
-                                fct: () {
-                                  _callPhoneNumber();
-                                },
-                                icon: Icons.call,
-                              )
-                            ],
-                          ),
+                          _isSameUser
+                              ? Container()
+                              : Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    contactBy(
+                                      color: Colors.green,
+                                      fct: () {
+                                        _openWhatsAppChat();
+                                      },
+                                      icon: FontAwesome.whatsapp,
+                                    ),
+                                    contactBy(
+                                      color: Colors.red,
+                                      fct: () {
+                                        _mailTo();
+                                      },
+                                      icon: Icons.mail_outline,
+                                    ),
+                                    contactBy(
+                                      color: Colors.purple,
+                                      fct: () {
+                                        _callPhoneNumber();
+                                      },
+                                      icon: Icons.call,
+                                    )
+                                  ],
+                                ),
                           const SizedBox(
                             height: 15,
                           ),
-                          const Divider(thickness: 1),
+                          !_isSameUser
+                              ? Container()
+                              : Divider(
+                                  thickness: 1,
+                                ),
                           const SizedBox(
                             height: 15,
                           ),
-                          Center(
-                            child: Padding(
-                              padding: const EdgeInsets.only(bottom: 30.0),
-                              child: MaterialButton(
-                                color: Colors.pink.shade700,
-                                elevation: 8,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(13)),
-                                onPressed: () {
-                                  GlobalMethod.logout(context);
-                                },
-                                child: Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 10),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: const [
-                                      Icon(
-                                        Icons.logout,
-                                        color: Colors.white,
-                                      ),
-                                      Padding(
-                                        padding:
-                                            EdgeInsets.symmetric(horizontal: 5),
-                                        child: Text(
-                                          "Logout",
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                          !_isSameUser
+                              ? Container()
+                              : Center(
+                                  child: Padding(
+                                    padding:
+                                        const EdgeInsets.only(bottom: 30.0),
+                                    child: MaterialButton(
+                                      color: Colors.pink.shade700,
+                                      elevation: 8,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(13)),
+                                      onPressed: () {
+                                        GlobalMethod.logout(context);
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 10),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: const [
+                                            Icon(
+                                              Icons.logout,
+                                              color: Colors.white,
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 5),
+                                              child: Text(
+                                                "Logout",
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                    ],
+                                    ),
                                   ),
-                                ),
-                              ),
-                            ),
-                          )
+                                )
                         ],
                       ),
                     ),
