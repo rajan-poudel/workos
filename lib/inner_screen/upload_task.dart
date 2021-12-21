@@ -1,6 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:uuid/uuid.dart';
 import 'package:workos/constants/constants.dart';
 import 'package:workos/screens/tasks_screen.dart';
+import 'package:workos/services/global_method.dart';
 import 'package:workos/widgets/drawer_widget.dart';
 
 class UploadTask extends StatefulWidget {
@@ -11,6 +16,8 @@ class UploadTask extends StatefulWidget {
 }
 
 class _UploadTaskState extends State<UploadTask> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
   TextEditingController _taskCategoryContoller =
       TextEditingController(text: "Choose category");
   TextEditingController _taskTitleContoller = TextEditingController(text: "");
@@ -21,6 +28,9 @@ class _UploadTaskState extends State<UploadTask> {
 
   final _formKey = GlobalKey<FormState>();
   DateTime? picked;
+  Timestamp? _deadlineTimestamp;
+
+  bool _isLoading = false;
   @override
   void dispose() {
     super.dispose();
@@ -30,10 +40,56 @@ class _UploadTaskState extends State<UploadTask> {
     _deadlineContoller.dispose();
   }
 
-  void _UploadTask() {
+  void _UploadTask() async {
+    var taskId = Uuid().v4();
+    User? user = _auth.currentUser;
+    final _uid = user!.uid;
     final isValid = _formKey.currentState!.validate();
     if (isValid) {
-      print("it is valid");
+      if (_taskCategoryContoller.text == "Choose category" &&
+          _deadlineContoller.text == "Pick up a date") {
+        GlobalMethod.showErrorDialog(
+            error: "Please fill everything", context: context);
+        return;
+      }
+      setState(() {
+        _isLoading = true;
+      });
+      try {
+        await FirebaseFirestore.instance.collection("tasks").doc(taskId).set({
+          'taskId': taskId,
+          'uploadedBy': _uid,
+          'taskTitle': _taskTitleContoller.text,
+          'taskDescription': _taskDescriptionContoller.text,
+          'deadlineDate': _deadlineContoller.text,
+          'deadlineDateTimestamp': _deadlineTimestamp,
+          'taskCategory': _taskCategoryContoller.text,
+          'taskComments': [],
+          'isDone': false,
+          'createdAt': Timestamp.now(),
+        });
+        await Fluttertoast.showToast(
+          msg: "Task uploaded",
+          toastLength: Toast.LENGTH_LONG,
+          // gravity: ToastGravity.CENTER,
+          // timeInSecForIosWeb: 1,
+          backgroundColor: Colors.grey,
+          // textColor: Colors.white,
+          fontSize: 18.0,
+        );
+        _taskTitleContoller.clear();
+        _taskDescriptionContoller.clear();
+        setState(() {
+          _taskCategoryContoller.text = "Choose category";
+          _deadlineContoller.text = "Choose category";
+        });
+      } catch (error) {
+        throw "error";
+      } finally {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     } else {
       print("it is not valid");
     }
@@ -135,37 +191,39 @@ class _UploadTaskState extends State<UploadTask> {
                 Center(
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 30.0),
-                    child: MaterialButton(
-                      color: Colors.pink.shade700,
-                      elevation: 8,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(13)),
-                      onPressed: _UploadTask,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Text(
-                              "Upload",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
+                    child: _isLoading
+                        ? CircularProgressIndicator()
+                        : MaterialButton(
+                            color: Colors.pink.shade700,
+                            elevation: 8,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(13)),
+                            onPressed: _UploadTask,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: const [
+                                  Text(
+                                    "Upload",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 8,
+                                  ),
+                                  Icon(
+                                    Icons.upload,
+                                    color: Colors.white,
+                                  )
+                                ],
                               ),
                             ),
-                            SizedBox(
-                              width: 8,
-                            ),
-                            Icon(
-                              Icons.upload,
-                              color: Colors.white,
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
+                          ),
                   ),
                 )
               ],
@@ -189,6 +247,9 @@ class _UploadTaskState extends State<UploadTask> {
       setState(() {
         _deadlineContoller.text =
             '${picked!.year}-${picked!.month}-${picked!.day}';
+
+        _deadlineTimestamp = Timestamp.fromMicrosecondsSinceEpoch(
+            picked!.microsecondsSinceEpoch);
       });
     }
   }
