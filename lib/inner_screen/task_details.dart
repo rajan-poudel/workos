@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:uuid/uuid.dart';
 import 'package:workos/constants/constants.dart';
 import 'package:workos/services/global_method.dart';
 import 'package:workos/widgets/comments_widget.dart';
@@ -379,7 +381,45 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                                           shape: RoundedRectangleBorder(
                                               borderRadius:
                                                   BorderRadius.circular(8)),
-                                          onPressed: () {},
+                                          onPressed: () async {
+                                            if (_commentController
+                                                .text.isEmpty) {
+                                              GlobalMethod.showErrorDialog(
+                                                  error:
+                                                      "please enter comment first",
+                                                  context: context);
+                                            } else {
+                                              var _generatedId = Uuid().v4();
+                                              await FirebaseFirestore.instance
+                                                  .collection('tasks')
+                                                  .doc(widget.taskId)
+                                                  .update({
+                                                'taskComments ':
+                                                    FieldValue.arrayUnion([
+                                                  {
+                                                    'userId': widget.uploadedBY,
+                                                    'commentId': _generatedId,
+                                                    'name': authorName,
+                                                    'userImage': userImage,
+                                                    'commentBody':
+                                                        _commentController.text,
+                                                    'time': Timestamp.now(),
+                                                  }
+                                                ])
+                                              });
+                                              await Fluttertoast.showToast(
+                                                msg:
+                                                    "your comment has been added",
+                                                toastLength: Toast.LENGTH_LONG,
+                                                // gravity: ToastGravity.CENTER,
+                                                // timeInSecForIosWeb: 1,
+                                                backgroundColor: Colors.grey,
+                                                // textColor: Colors.white,
+                                                fontSize: 18.0,
+                                              );
+                                              _commentController.clear();
+                                            }
+                                          },
                                           child: Text(
                                             "Post",
                                             style: TextStyle(
