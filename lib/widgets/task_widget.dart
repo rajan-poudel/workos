@@ -1,15 +1,31 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:workos/constants/constants.dart';
 import 'package:workos/inner_screen/task_details.dart';
+import 'package:workos/services/global_method.dart';
 
 class TaskWidget extends StatefulWidget {
-  const TaskWidget({Key? key}) : super(key: key);
+  final String taskTitle;
+  final String taskDescription;
+  final String taskId;
+  final String uploadedBy;
+  final bool isDone;
+
+  const TaskWidget(
+      {required this.taskTitle,
+      required this.taskDescription,
+      required this.taskId,
+      required this.uploadedBy,
+      required this.isDone});
 
   @override
   _TaskWidgetState createState() => _TaskWidgetState();
 }
 
 class _TaskWidgetState extends State<TaskWidget> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -36,14 +52,16 @@ class _TaskWidgetState extends State<TaskWidget> {
           ),
           child: CircleAvatar(
             backgroundColor: Colors.transparent,
-            radius:
-                20, //https://image.flaticon.com/icons/png/128/850/850960.png
+            radius: 20,
             child: Image.network(
-                'https://image.flaticon.com/icons/png/128/390/390973.png'),
+              widget.isDone
+                  ? 'https://image.flaticon.com/icons/png/128/390/390973.png'
+                  : 'https://image.flaticon.com/icons/png/128/850/850960.png',
+            ),
           ),
         ),
         title: Text(
-          'Title',
+          widget.taskTitle,
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
           style: TextStyle(
@@ -59,8 +77,8 @@ class _TaskWidgetState extends State<TaskWidget> {
               Icons.linear_scale_outlined,
               color: Colors.pink.shade800,
             ),
-            const Text(
-              "Subtitle/Task Descriptions",
+            Text(
+              widget.taskDescription,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(fontSize: 16),
@@ -77,13 +95,42 @@ class _TaskWidgetState extends State<TaskWidget> {
   }
 
   _deleteDialog() {
+    User? user = _auth.currentUser;
+    final _uid = user!.uid;
     showDialog(
       context: context,
-      builder: (ctx) {
+      builder: (context) {
         return AlertDialog(
           actions: [
             TextButton(
-              onPressed: () {},
+              onPressed: () async {
+                try {
+                  if (widget.uploadedBy == _uid) {
+                    await FirebaseFirestore.instance
+                        .collection('tasks')
+                        .doc(widget.taskId)
+                        .delete();
+
+                    await Fluttertoast.showToast(
+                      msg: "Task has been deleted",
+                      toastLength: Toast.LENGTH_LONG,
+                      // gravity: ToastGravity.CENTER,
+                      // timeInSecForIosWeb: 1,
+                      backgroundColor: Colors.red,
+                      // textColor: Colors.white,
+                      fontSize: 18.0,
+                    );
+
+                    Navigator.canPop(context) ? Navigator.pop(context) : null;
+                  } else {
+                    GlobalMethod.showErrorDialog(
+                        error: "Cannot perform this  action", context: context);
+                  }
+                } catch (error) {
+                  GlobalMethod.showErrorDialog(
+                      error: "This Task cannot be deleted", context: context);
+                } finally {}
+              },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: const [

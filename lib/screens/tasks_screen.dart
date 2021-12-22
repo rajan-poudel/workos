@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:workos/constants/constants.dart';
 import 'package:workos/widgets/drawer_widget.dart';
@@ -48,9 +49,41 @@ class _TasksScreenState extends State<TasksScreen> {
               ))
         ],
       ),
-      body: ListView.builder(itemBuilder: (BuildContext context, int index) {
-        return TaskWidget();
-      }),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection("tasks").snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.connectionState == ConnectionState.active) {
+            if (snapshot.data!.docs.isNotEmpty) {
+              return ListView.builder(
+                  itemCount: snapshot.data!.docs.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return TaskWidget(
+                      taskTitle: snapshot.data!.docs[index]['taskTitle'],
+                      taskDescription: snapshot.data!.docs[index]
+                          ['taskDescription'],
+                      taskId: snapshot.data!.docs[index]['taskId'],
+                      uploadedBy: snapshot.data!.docs[index]['uploadedBy'],
+                      isDone: snapshot.data!.docs[index]['isDone'],
+                    );
+                  });
+            } else {
+              Center(
+                child: Text(
+                  "There is no Tasks",
+                  style: TextStyle(fontSize: 30),
+                ),
+              );
+            }
+          }
+          return Center(
+              child: Text(
+            "Something went Wrong",
+            style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+          ));
+        },
+      ),
     );
   }
 

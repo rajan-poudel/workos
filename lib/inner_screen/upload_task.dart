@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:uuid/uuid.dart';
 import 'package:workos/constants/constants.dart';
-import 'package:workos/screens/tasks_screen.dart';
 import 'package:workos/services/global_method.dart';
 import 'package:workos/widgets/drawer_widget.dart';
 
@@ -307,10 +306,10 @@ class _UploadTaskState extends State<UploadTask> {
           title: Row(
             children: [
               Text(
-                'Choose the task Category',
+                'Choose Task Category',
                 style: TextStyle(color: Colors.pink.shade800),
               ),
-              Icon(Icons.arrow_downward_sharp)
+              const Icon(Icons.arrow_downward_sharp)
             ],
           ),
           content: Container(
@@ -355,7 +354,7 @@ class _UploadTaskState extends State<UploadTask> {
               onPressed: () {
                 Navigator.canPop(context) ? Navigator.pop(context) : null;
               },
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
           ],
         );
