@@ -36,7 +36,10 @@ class _TaskWidgetState extends State<TaskWidget> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => TaskDetailsScreen(),
+              builder: (context) => TaskDetailsScreen(
+                taskId: widget.taskId,
+                uploadedBY: widget.uploadedBy,
+              ),
             ),
           );
         },

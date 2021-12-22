@@ -1,9 +1,17 @@
+import 'dart:math';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:workos/constants/constants.dart';
+import 'package:workos/services/global_method.dart';
 import 'package:workos/widgets/comments_widget.dart';
 
 class TaskDetailsScreen extends StatefulWidget {
-  const TaskDetailsScreen({Key? key}) : super(key: key);
+  final String uploadedBY;
+  final String taskId;
+
+  const TaskDetailsScreen({required this.uploadedBY, required this.taskId});
 
   @override
   _TaskDetailsScreenState createState() => _TaskDetailsScreenState();
@@ -22,8 +30,69 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
   TextEditingController _commentController = TextEditingController();
 
   bool _isCommenting = false;
+
+  String? authorName;
+  String? authorPosition;
+  String? userImage;
+  String? taskCategory;
+  String? taskDescription;
+  String? taskTitle;
+  bool? _isDone;
+  Timestamp? postedDateTimestamp;
+  Timestamp? deadlineDateTimestamp;
+  String? postedDate;
+  String? deadLineDate;
+  bool isDeadlineAvailable = false;
+
+  @override
+  void initState() {
+    super.initState();
+    getTaskData();
+  }
+
+  void getTaskData() async {
+    final DocumentSnapshot userDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(widget.uploadedBY)
+        .get();
+
+    if (userDoc == null) {
+      return;
+    } else {
+      setState(() {
+        authorName = userDoc.get('name');
+        authorPosition = userDoc.get('positionCompany');
+        userImage = userDoc.get('userImage');
+      });
+    }
+
+    final DocumentSnapshot taskDatabase = await FirebaseFirestore.instance
+        .collection('tasks')
+        .doc(widget.taskId)
+        .get();
+
+    if (taskDatabase == null) {
+      return;
+    } else {
+      setState(() {
+        _isDone = taskDatabase.get('isDone');
+        taskTitle = taskDatabase.get('taskTitle');
+        taskCategory = taskDatabase.get("taskCategory");
+        taskDescription = taskDatabase.get('taskDescription');
+        postedDateTimestamp = taskDatabase.get('createdAt');
+        deadlineDateTimestamp = taskDatabase.get('deadlineDateTimestamp');
+        deadLineDate = taskDatabase.get('deadlineDate');
+        var postDate = postedDateTimestamp!.toDate();
+        postedDate = '${postDate.year}-${postDate.month}-${postDate.day}';
+      });
+      var date = deadlineDateTimestamp!.toDate();
+      isDeadlineAvailable = date.isAfter(DateTime.now());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final FirebaseAuth _auth = FirebaseAuth.instance;
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(
@@ -52,7 +121,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
               height: 15,
             ),
             Text(
-              "Task  Title",
+              taskTitle == null ? '' : taskTitle!,
               style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Constants.darkBlue,
@@ -88,7 +157,9 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                               shape: BoxShape.circle,
                               image: DecorationImage(
                                 image: NetworkImage(
-                                  'https://cdn.icon-icons.com/icons2/2643/PNG/512/male_boy_person_people_avatar_icon_159358.png',
+                                  userImage == null
+                                      ? 'https://cdn.icon-icons.com/icons2/2643/PNG/512/male_boy_person_people_avatar_icon_159358.png'
+                                      : userImage!,
                                 ),
                                 fit: BoxFit.fill,
                               ),
@@ -100,9 +171,10 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text("Uploader Name", style: _textStyle),
+                              Text(authorName == null ? '' : authorName!,
+                                  style: _textStyle),
                               Text(
-                                "Uploader job",
+                                authorPosition == null ? '' : authorPosition!,
                                 style: _textStyle,
                               ),
                             ],
@@ -125,7 +197,8 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                         children: [
                           Text("Uploaded on: ", style: _titleStyle),
                           // Spacer(),
-                          Text("date:1234567 ", style: _textStyle),
+                          Text(postedDate == null ? '' : postedDate!,
+                              style: _textStyle),
                         ],
                       ),
                       SizedBox(
@@ -137,7 +210,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                           Text("DeadLine date: ", style: _titleStyle),
                           // Spacer(),
                           Text(
-                            "date:1234567 ",
+                            deadLineDate == null ? '' : deadLineDate!,
                             style: TextStyle(
                                 fontWeight: FontWeight.normal,
                                 color: Colors.red,
@@ -150,10 +223,14 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                       ),
                       Center(
                         child: Text(
-                          "Still have a time ",
+                          isDeadlineAvailable
+                              ? "Still have a time "
+                              : "Deadline passed",
                           style: TextStyle(
                               fontWeight: FontWeight.normal,
-                              color: Colors.green,
+                              color: isDeadlineAvailable
+                                  ? Colors.green
+                                  : Colors.red,
                               fontSize: 15),
                         ),
                       ),
@@ -165,7 +242,27 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                       Row(
                         children: [
                           InkWell(
-                            onTap: () {},
+                            onTap: () {
+                              User? user = _auth.currentUser;
+                              var _uid = user!.uid;
+                              if (_uid == widget.uploadedBY) {
+                                try {
+                                  FirebaseFirestore.instance
+                                      .collection('tasks')
+                                      .doc(widget.taskId)
+                                      .update({'isDone': true});
+                                } catch (error) {
+                                  GlobalMethod.showErrorDialog(
+                                      error: "Action cannot be performed",
+                                      context: context);
+                                }
+                              } else {
+                                GlobalMethod.showErrorDialog(
+                                    error: "you can't perform this action",
+                                    context: context);
+                              }
+                              getTaskData();
+                            },
                             child: Text(
                               "Done ",
                               style: TextStyle(
@@ -178,7 +275,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                             ),
                           ),
                           Opacity(
-                            opacity: 1,
+                            opacity: _isDone == true ? 1 : 0,
                             child: Icon(
                               Icons.check_box_rounded,
                               color: Colors.green,
@@ -188,7 +285,27 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                             width: 40,
                           ),
                           InkWell(
-                            onTap: () {},
+                            onTap: () {
+                              User? user = _auth.currentUser;
+                              var _uid = user!.uid;
+                              if (_uid == widget.uploadedBY) {
+                                try {
+                                  FirebaseFirestore.instance
+                                      .collection('tasks')
+                                      .doc(widget.taskId)
+                                      .update({'isDone': false});
+                                } catch (error) {
+                                  GlobalMethod.showErrorDialog(
+                                      error: "Action cannot be performed",
+                                      context: context);
+                                }
+                              } else {
+                                GlobalMethod.showErrorDialog(
+                                    error: "you can't perform this action",
+                                    context: context);
+                              }
+                              getTaskData();
+                            },
                             child: Text(" Not Done ",
                                 style: TextStyle(
                                   decoration: TextDecoration.underline,
@@ -198,7 +315,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                                 )),
                           ),
                           Opacity(
-                            opacity: 0,
+                            opacity: _isDone == false ? 1 : 0,
                             child: Icon(
                               Icons.check_box_rounded,
                               color: Colors.red,
@@ -211,7 +328,8 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                       SizedBox(
                         height: 10,
                       ),
-                      Text("Description: ", style: _textStyle),
+                      Text(taskDescription == null ? '' : taskDescription!,
+                          style: _textStyle),
                       SizedBox(
                         height: 10,
                       ),
