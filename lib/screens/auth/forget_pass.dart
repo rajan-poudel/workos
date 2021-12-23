@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:workos/screens/auth/register.dart';
 
 class ForgetPasswordScreen extends StatefulWidget {
@@ -16,6 +18,8 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen>
   late Animation<double> _animation;
   late TextEditingController _forgetPassTextController =
       TextEditingController(text: "");
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   void dispose() {
@@ -43,8 +47,19 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen>
     super.initState();
   }
 
-  void _forgetPassFCT() {
-    print("content :${_forgetPassTextController.text}");
+  void _forgetPassFCT() async {
+    // print("content :${_forgetPassTextController.text}");
+    _auth.sendPasswordResetEmail(email: _forgetPassTextController.text);
+    Navigator.canPop(context) ? Navigator.pop(context) : null;
+    await Fluttertoast.showToast(
+      msg: "Password Reset link sended",
+      toastLength: Toast.LENGTH_LONG,
+      // gravity: ToastGravity.CENTER,
+      // timeInSecForIosWeb: 1,
+      backgroundColor: Colors.grey,
+      // textColor: Colors.white,
+      fontSize: 18.0,
+    );
   }
 
   @override

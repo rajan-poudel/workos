@@ -170,16 +170,18 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                           const SizedBox(
                             width: 5,
                           ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(authorName == null ? '' : authorName!,
-                                  style: _textStyle),
-                              Text(
-                                authorPosition == null ? '' : authorPosition!,
-                                style: _textStyle,
-                              ),
-                            ],
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(authorName == null ? '' : authorName!,
+                                    style: _textStyle),
+                                Text(
+                                  authorPosition == null ? '' : authorPosition!,
+                                  style: _textStyle,
+                                ),
+                              ],
+                            ),
                           )
                         ],
                       ),
@@ -438,7 +440,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                                             _isCommenting = !_isCommenting;
                                           });
                                         },
-                                        child: Text("Cancel"),
+                                        child: const Text("Cancel"),
                                       )
                                     ],
                                   ))
