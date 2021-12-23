@@ -213,7 +213,7 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                                   return null;
                                 }
                               },
-                              style: TextStyle(color: Colors.white),
+                              style: const TextStyle(color: Colors.white),
                               decoration: const InputDecoration(
                                 hintText: 'Full Name ',
                                 hintStyle: TextStyle(color: Colors.white),
@@ -285,7 +285,7 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                           )
                         ],
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 20,
                       ),
                       //email

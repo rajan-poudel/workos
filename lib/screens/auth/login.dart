@@ -119,7 +119,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                   text: TextSpan(
                     children: [
                       const TextSpan(
-                        text: 'Don\'t have an account',
+                        text: 'Don\'t have an account ?',
                         style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
@@ -128,7 +128,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                       // SizedBox(width: 10,), not allowed
                       const TextSpan(text: "   "),
                       TextSpan(
-                        text: 'Register',
+                        text: 'SignUp',
                         recognizer: TapGestureRecognizer()
                           ..onTap = () => Navigator.push(
                               context,

@@ -130,7 +130,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen>
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(13)),
                   onPressed: _forgetPassFCT,
-                  child: Padding(
+                  child: const Padding(
                       padding: EdgeInsets.symmetric(vertical: 10),
                       child: Text(
                         "Reset now",
