@@ -395,7 +395,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                                                   .collection('tasks')
                                                   .doc(widget.taskId)
                                                   .update({
-                                                'taskComments ':
+                                                'taskComments':
                                                     FieldValue.arrayUnion([
                                                   {
                                                     'userId': widget.uploadedBY,
@@ -411,7 +411,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                                               await Fluttertoast.showToast(
                                                 msg:
                                                     "your comment has been added",
-                                                toastLength: Toast.LENGTH_LONG,
+                                                toastLength: Toast.LENGTH_SHORT,
                                                 // gravity: ToastGravity.CENTER,
                                                 // timeInSecForIosWeb: 1,
                                                 backgroundColor: Colors.grey,
@@ -479,7 +479,8 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                               .collection('tasks')
                               .doc(widget.taskId)
                               .get(),
-                          builder: (context, snapshot) {
+                          builder: (context,
+                              AsyncSnapshot<DocumentSnapshot> snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
                               return const Center(

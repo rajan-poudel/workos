@@ -63,7 +63,7 @@ class _UploadTaskState extends State<UploadTask> {
           'deadlineDate': _deadlineContoller.text,
           'deadlineDateTimestamp': _deadlineTimestamp,
           'taskCategory': _taskCategoryContoller.text,
-          // 'taskComments': [],
+          'taskComments': [],
           'isDone': false,
           'createdAt': Timestamp.now(),
         });
@@ -103,7 +103,7 @@ class _UploadTaskState extends State<UploadTask> {
         elevation: 0,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       ),
-      drawer: DrawerWidget(),
+      drawer: const DrawerWidget(),
       body: Padding(
         padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
         child: Card(
@@ -111,7 +111,7 @@ class _UploadTaskState extends State<UploadTask> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 Align(
@@ -127,13 +127,13 @@ class _UploadTaskState extends State<UploadTask> {
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
-                Divider(
+                const Divider(
                   thickness: 1,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 Padding(
@@ -238,7 +238,7 @@ class _UploadTaskState extends State<UploadTask> {
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime.now().subtract(
-        Duration(days: 0),
+        const Duration(days: 0),
       ),
       lastDate: DateTime(2030),
     );

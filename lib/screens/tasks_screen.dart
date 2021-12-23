@@ -12,13 +12,14 @@ class TasksScreen extends StatefulWidget {
 }
 
 class _TasksScreenState extends State<TasksScreen> {
+  String? taskCategoryFilter;
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       drawer: DrawerWidget(),
       appBar: AppBar(
-        iconTheme: IconThemeData(
+        iconTheme: const IconThemeData(
           color: Colors.black,
         ),
         // leading: Builder(builder: (ctx) {
@@ -34,7 +35,7 @@ class _TasksScreenState extends State<TasksScreen> {
         // }),
         elevation: 0,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        title: Text(
+        title: const Text(
           "Tasks",
           style: TextStyle(color: Colors.pink),
         ),
@@ -43,17 +44,25 @@ class _TasksScreenState extends State<TasksScreen> {
               onPressed: () {
                 _showTaskCategoriesDialog(size: size);
               },
-              icon: Icon(
+              icon: const Icon(
                 Icons.filter_list_outlined,
                 color: Colors.black,
               ))
         ],
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection("tasks").snapshots(),
+        stream: taskCategoryFilter == null
+            ? FirebaseFirestore.instance
+                .collection('tasks')
+                .orderBy('createdAt', descending: true)
+                .snapshots()
+            : FirebaseFirestore.instance
+                .collection('tasks')
+                .where('taskCategory', isEqualTo: taskCategoryFilter)
+                .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.connectionState == ConnectionState.active) {
             if (snapshot.data!.docs.isNotEmpty) {
               return ListView.builder(
@@ -69,15 +78,15 @@ class _TasksScreenState extends State<TasksScreen> {
                     );
                   });
             } else {
-              Center(
+              const Center(
                 child: Text(
                   "There is no Tasks",
-                  style: TextStyle(fontSize: 30),
+                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                 ),
               );
             }
           }
-          return Center(
+          return const Center(
               child: Text(
             "Something went Wrong",
             style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
@@ -105,8 +114,13 @@ class _TasksScreenState extends State<TasksScreen> {
                 itemBuilder: (BuildContext context, int index) {
                   return InkWell(
                     onTap: () {
+                      setState(() {
+                        taskCategoryFilter = Constants.taskCategoryList[index];
+                      });
+                      Navigator.canPop(ctx) ? Navigator.pop(ctx) : null;
+                      // ignore: avoid_print
                       print(
-                          "taskCategoryList[index],${Constants.taskCategoryList[index]}");
+                          'taskCategoryList[index], ${Constants.taskCategoryList[index]}');
                     },
                     child: Row(
                       children: [
@@ -135,11 +149,16 @@ class _TasksScreenState extends State<TasksScreen> {
               onPressed: () {
                 Navigator.canPop(context) ? Navigator.pop(context) : null;
               },
-              child: Text('Close'),
+              child: const Text('Close'),
             ),
             TextButton(
-              onPressed: () {},
-              child: Text('Cancel filter'),
+              onPressed: () {
+                setState(() {
+                  taskCategoryFilter = null;
+                });
+                Navigator.canPop(ctx) ? Navigator.pop(ctx) : null;
+              },
+              child: const Text('Cancel filter'),
             ),
           ],
         );

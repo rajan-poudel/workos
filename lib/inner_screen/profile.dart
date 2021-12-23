@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttericon/font_awesome_icons.dart';
 import 'package:workos/constants/constants.dart';
 import 'package:workos/services/global_method.dart';
-import 'package:workos/user_state.dart';
+
 import 'package:workos/widgets/drawer_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -130,7 +130,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           const SizedBox(
                             height: 15,
                           ),
-                          Text(
+                          const Text(
                             "Contact Info",
                             style: TextStyle(
                               color: Colors.black,
@@ -155,7 +155,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           _isSameUser
                               ? Container()
-                              : Divider(
+                              : const Divider(
                                   thickness: 1,
                                 ),
                           const SizedBox(
@@ -195,7 +195,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           !_isSameUser
                               ? Container()
-                              : Divider(
+                              : const Divider(
                                   thickness: 1,
                                 ),
                           const SizedBox(

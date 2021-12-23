@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class Constants {
-  static Color darkBlue = Color(0xFF00325A);
+  static Color darkBlue = const Color(0xFF00325A);
 
   static List<String> taskCategoryList = [
     'Business',
@@ -19,7 +19,7 @@ class Constants {
     "Team Leader",
     "Designer",
     "Web Developer",
-    "Mobile App Developer",
+    "Flutter Developer",
     "Full stack Developer"
   ];
 }
