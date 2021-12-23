@@ -63,7 +63,7 @@ class _UploadTaskState extends State<UploadTask> {
           'deadlineDate': _deadlineContoller.text,
           'deadlineDateTimestamp': _deadlineTimestamp,
           'taskCategory': _taskCategoryContoller.text,
-          'taskComments': [],
+          // 'taskComments': [],
           'isDone': false,
           'createdAt': Timestamp.now(),
         });
@@ -191,7 +191,7 @@ class _UploadTaskState extends State<UploadTask> {
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 30.0),
                     child: _isLoading
-                        ? CircularProgressIndicator()
+                        ? const CircularProgressIndicator()
                         : MaterialButton(
                             color: Colors.pink.shade700,
                             elevation: 8,

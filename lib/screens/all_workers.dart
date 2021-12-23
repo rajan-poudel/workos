@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -19,14 +17,14 @@ class _AllWorkersScreenState extends State<AllWorkersScreen> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      drawer: DrawerWidget(),
+      drawer: const DrawerWidget(),
       appBar: AppBar(
-        iconTheme: IconThemeData(
+        iconTheme: const IconThemeData(
           color: Colors.black,
         ),
         elevation: 0,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        title: Text(
+        title: const Text(
           "All Workers",
           style: TextStyle(color: Colors.pink),
         ),
@@ -35,7 +33,7 @@ class _AllWorkersScreenState extends State<AllWorkersScreen> {
         stream: FirebaseFirestore.instance.collection("users").snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.connectionState == ConnectionState.active) {
             if (snapshot.data!.docs.isNotEmpty) {
               return ListView.builder(
@@ -52,7 +50,7 @@ class _AllWorkersScreenState extends State<AllWorkersScreen> {
                     );
                   });
             } else {
-              Center(
+              const Center(
                 child: Text(
                   "There is no users",
                   style: TextStyle(fontSize: 30),
@@ -60,7 +58,7 @@ class _AllWorkersScreenState extends State<AllWorkersScreen> {
               );
             }
           }
-          return Center(
+          return const Center(
               child: Text(
             "Something went Wrong",
             style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),

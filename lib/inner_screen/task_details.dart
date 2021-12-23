@@ -97,7 +97,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
     final FirebaseAuth _auth = FirebaseAuth.instance;
     return Scaffold(
       appBar: AppBar(
-        iconTheme: IconThemeData(
+        iconTheme: const IconThemeData(
           color: Colors.black,
         ),
         elevation: 0,
@@ -119,7 +119,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(
+            const SizedBox(
               height: 15,
             ),
             Text(
@@ -129,7 +129,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                   color: Constants.darkBlue,
                   fontSize: 30),
             ),
-            SizedBox(
+            const SizedBox(
               height: 15,
             ),
             Padding(
@@ -150,7 +150,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                                 fontWeight: FontWeight.normal,
                                 fontStyle: FontStyle.italic),
                           ),
-                          Spacer(),
+                          const Spacer(),
                           Container(
                             height: 80,
                             width: 80,
@@ -167,7 +167,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                               ),
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 5,
                           ),
                           Column(
@@ -203,7 +203,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                               style: _textStyle),
                         ],
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
                       Row(
@@ -213,14 +213,14 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                           // Spacer(),
                           Text(
                             deadLineDate == null ? '' : deadLineDate!,
-                            style: TextStyle(
+                            style: const TextStyle(
                                 fontWeight: FontWeight.normal,
                                 color: Colors.red,
                                 fontSize: 15),
                           ),
                         ],
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 8,
                       ),
                       Center(
@@ -238,7 +238,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                       ),
                       _dividerWidget(),
                       Text("Done State: ", style: _titleStyle),
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
                       Row(
@@ -278,12 +278,12 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                           ),
                           Opacity(
                             opacity: _isDone == true ? 1 : 0,
-                            child: Icon(
+                            child: const Icon(
                               Icons.check_box_rounded,
                               color: Colors.green,
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 40,
                           ),
                           InkWell(
@@ -318,7 +318,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                           ),
                           Opacity(
                             opacity: _isDone == false ? 1 : 0,
-                            child: Icon(
+                            child: const Icon(
                               Icons.check_box_rounded,
                               color: Colors.red,
                             ),
@@ -327,17 +327,17 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                       ),
                       _dividerWidget(),
                       Text("Task description: ", style: _titleStyle),
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
                       Text(taskDescription == null ? '' : taskDescription!,
                           style: _textStyle),
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
 
                       AnimatedSwitcher(
-                        duration: Duration(
+                        duration: const Duration(
                           microseconds: 500,
                         ),
                         child: _isCommenting
@@ -355,11 +355,12 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                                         filled: true,
                                         fillColor: Theme.of(context)
                                             .scaffoldBackgroundColor,
-                                        enabledBorder: UnderlineInputBorder(
+                                        enabledBorder:
+                                            const UnderlineInputBorder(
                                           borderSide:
                                               BorderSide(color: Colors.white),
                                         ),
-                                        focusedBorder: OutlineInputBorder(
+                                        focusedBorder: const OutlineInputBorder(
                                           borderSide:
                                               BorderSide(color: Colors.pink),
                                         ),
@@ -419,8 +420,9 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                                               );
                                               _commentController.clear();
                                             }
+                                            setState(() {});
                                           },
-                                          child: Text(
+                                          child: const Text(
                                             "Post",
                                             style: TextStyle(
                                               color: Colors.white,
@@ -431,12 +433,13 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                                         ),
                                       ),
                                       TextButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              _isCommenting = !_isCommenting;
-                                            });
-                                          },
-                                          child: Text("Cancel"))
+                                        onPressed: () {
+                                          setState(() {
+                                            _isCommenting = !_isCommenting;
+                                          });
+                                        },
+                                        child: Text("Cancel"),
+                                      )
                                     ],
                                   ))
                                 ],
@@ -452,9 +455,8 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                                       _isCommenting = !_isCommenting;
                                     });
                                   },
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 10),
+                                  child: const Padding(
+                                    padding: EdgeInsets.symmetric(vertical: 10),
                                     child: Text(
                                       "Add a comment",
                                       style: TextStyle(
@@ -467,22 +469,53 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                                 ),
                               ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 40,
                       ),
                       //comment Section
-                      ListView.separated(
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemBuilder: (context, index) {
-                            return CommentWidget();
-                          },
-                          separatorBuilder: (context, index) {
-                            return Divider(
-                              thickness: 1,
+
+                      FutureBuilder<DocumentSnapshot>(
+                          future: FirebaseFirestore.instance
+                              .collection('tasks')
+                              .doc(widget.taskId)
+                              .get(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                  child: CircularProgressIndicator());
+                            } else {
+                              if (snapshot.data == null) {
+                                return const Center(
+                                  child: Text("No Comments"),
+                                );
+                              }
+                            }
+                            return ListView.separated(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                return CommentWidget(
+                                  commentId: snapshot.data!['taskComments']
+                                      [index]['commentId'],
+                                  commenterId: snapshot.data!['taskComments']
+                                      [index]['userId'],
+                                  commenterName: snapshot.data!['taskComments']
+                                      [index]['name'],
+                                  commenterImage: snapshot.data!['taskComments']
+                                      [index]['userImage'],
+                                  commentBody: snapshot.data!['taskComments']
+                                      [index]['commentBody'],
+                                );
+                              },
+                              separatorBuilder: (context, index) {
+                                return const Divider(
+                                  thickness: 1,
+                                );
+                              },
+                              itemCount: snapshot.data!['taskComments'].length,
                             );
-                          },
-                          itemCount: 15)
+                          })
                     ],
                   ),
                 ),
@@ -496,7 +529,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
 
   Widget _dividerWidget() {
     return Column(
-      children: [
+      children: const [
         SizedBox(
           height: 15,
         ),
