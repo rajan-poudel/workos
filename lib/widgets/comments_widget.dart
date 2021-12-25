@@ -68,7 +68,7 @@ class _CommentWidgetState extends State<CommentWidget> {
               ),
             ),
           ),
-          SizedBox(
+          const SizedBox(
             width: 8,
           ),
           Flexible(
@@ -78,7 +78,7 @@ class _CommentWidgetState extends State<CommentWidget> {
                 children: [
                   Text(
                     widget.commenterName,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontStyle: FontStyle.normal,
                       fontSize: 18,

@@ -1,7 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:workos/constants/constants.dart';
 import 'package:workos/widgets/all_workers_widget.dart';
 import 'package:workos/widgets/drawer_widget.dart';
 

@@ -77,7 +77,7 @@ class _AllWorkersWidgetState extends State<AllWorkersWidget> {
               ' ${widget.positionInCompany}/${widget.phoneNumber}',
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(fontSize: 16),
+              style: const TextStyle(fontSize: 16),
             )
           ],
         ),

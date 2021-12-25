@@ -318,7 +318,7 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                           ),
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 20,
                       ),
                       //password
@@ -337,7 +337,7 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                             return null;
                           }
                         },
-                        style: TextStyle(color: Colors.white),
+                        style: const TextStyle(color: Colors.white),
                         decoration: InputDecoration(
                           suffixIcon: GestureDetector(
                             onTap: () {
@@ -353,20 +353,20 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                             ),
                           ),
                           hintText: 'Enter your Password',
-                          hintStyle: TextStyle(color: Colors.white),
-                          enabledBorder: UnderlineInputBorder(
+                          hintStyle: const TextStyle(color: Colors.white),
+                          enabledBorder: const UnderlineInputBorder(
                             borderSide: BorderSide(color: Colors.white),
                           ),
-                          focusedBorder: UnderlineInputBorder(
+                          focusedBorder: const UnderlineInputBorder(
                             borderSide: BorderSide(color: Colors.white),
                           ),
-                          errorBorder: UnderlineInputBorder(
+                          errorBorder: const UnderlineInputBorder(
                             borderSide: BorderSide(color: Colors.red),
                           ),
                         ),
                       ),
 
-                      SizedBox(
+                      const SizedBox(
                         height: 15,
                       ),
                       //phone number
@@ -387,7 +387,7 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                         onChanged: (v) {
                           print("phone number : ${_phoneNumberContoller.text}");
                         },
-                        style: TextStyle(color: Colors.white),
+                        style: const TextStyle(color: Colors.white),
                         decoration: const InputDecoration(
                           hintText: 'Phone Number',
                           hintStyle: TextStyle(color: Colors.white),
@@ -402,7 +402,7 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                           ),
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 15,
                       ),
                       //position
@@ -424,7 +424,7 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                               return null;
                             }
                           },
-                          style: TextStyle(color: Colors.white),
+                          style: const TextStyle(color: Colors.white),
                           decoration: const InputDecoration(
                             hintText: 'Position in the company',
                             hintStyle: TextStyle(color: Colors.white),
@@ -446,7 +446,7 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                     ],
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 80,
                 ),
                 _isLoading
@@ -497,7 +497,7 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text("Please choose an option"),
+            title: const Text("Please choose an option"),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -507,9 +507,9 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
+                    children: const [
                       Padding(
-                        padding: const EdgeInsets.all(4.0),
+                        padding: EdgeInsets.all(4.0),
                         child: Icon(
                           Icons.camera,
                           color: Colors.purple,
@@ -528,9 +528,9 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
+                    children: const [
                       Padding(
-                        padding: const EdgeInsets.all(4.0),
+                        padding: EdgeInsets.all(4.0),
                         child: Icon(
                           Icons.image,
                           color: Colors.purple,
@@ -642,7 +642,7 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
               onPressed: () {
                 Navigator.canPop(context) ? Navigator.pop(context) : null;
               },
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
           ],
         );

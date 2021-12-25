@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
       future: _initialization,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return MaterialApp(
+          return const MaterialApp(
             debugShowCheckedModeBanner: false,
             home: Scaffold(
               body: Center(
@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
             ),
           );
         } else if (snapshot.hasError) {
-          return MaterialApp(
+          return const MaterialApp(
             debugShowCheckedModeBanner: false,
             home: Scaffold(
               body: Center(
@@ -38,10 +38,10 @@ class MyApp extends StatelessWidget {
             title: 'Flutter workos',
             debugShowCheckedModeBanner: false,
             theme: ThemeData(
-              scaffoldBackgroundColor: Color(0xFFEDE7DC),
+              scaffoldBackgroundColor: const Color(0xFFEDE7DC),
               primarySwatch: Colors.blue,
             ),
-            home: UserState());
+            home: const UserState());
       },
     );
   }

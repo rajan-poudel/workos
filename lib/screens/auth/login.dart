@@ -178,7 +178,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                           ),
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 20,
                       ),
                       //password
@@ -194,7 +194,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                             return null;
                           }
                         },
-                        style: TextStyle(color: Colors.white),
+                        style: const TextStyle(color: Colors.white),
                         decoration: InputDecoration(
                           suffixIcon: GestureDetector(
                             onTap: () {
@@ -210,14 +210,14 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                             ),
                           ),
                           hintText: 'Enter your Password',
-                          hintStyle: TextStyle(color: Colors.white),
-                          enabledBorder: UnderlineInputBorder(
+                          hintStyle: const TextStyle(color: Colors.white),
+                          enabledBorder: const UnderlineInputBorder(
                             borderSide: BorderSide(color: Colors.white),
                           ),
-                          focusedBorder: UnderlineInputBorder(
+                          focusedBorder: const UnderlineInputBorder(
                             borderSide: BorderSide(color: Colors.white),
                           ),
-                          errorBorder: UnderlineInputBorder(
+                          errorBorder: const UnderlineInputBorder(
                             borderSide: BorderSide(color: Colors.red),
                           ),
                         ),
@@ -225,7 +225,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                     ],
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 15,
                 ),
                 Row(
@@ -240,7 +240,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                             ),
                           );
                         },
-                        child: Text("forget password?",
+                        child: const Text("forget password?",
                             style: TextStyle(
                               color: Colors.white,
                               decoration: TextDecoration.underline,
@@ -249,7 +249,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                             ))),
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 50,
                 ),
                 MaterialButton(

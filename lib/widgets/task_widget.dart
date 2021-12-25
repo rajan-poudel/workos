@@ -84,7 +84,7 @@ class _TaskWidgetState extends State<TaskWidget> {
               widget.taskDescription,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(fontSize: 16),
+              style: const TextStyle(fontSize: 16),
             )
           ],
         ),
@@ -140,6 +140,9 @@ class _TaskWidgetState extends State<TaskWidget> {
                   Icon(
                     Icons.delete,
                     color: Colors.red,
+                  ),
+                  SizedBox(
+                    width: 10,
                   ),
                   Text(
                     "Delete",

@@ -6,7 +6,6 @@ import 'package:workos/inner_screen/upload_task.dart';
 import 'package:workos/screens/all_workers.dart';
 import 'package:workos/screens/tasks_screen.dart';
 import 'package:workos/services/global_method.dart';
-import 'package:workos/user_state.dart';
 
 class DrawerWidget extends StatefulWidget {
   const DrawerWidget({Key? key}) : super(key: key);
@@ -118,7 +117,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => TasksScreen(),
+        builder: (context) => const TasksScreen(),
       ),
     );
   }
@@ -141,7 +140,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => AllWorkersScreen(),
+        builder: (context) => const AllWorkersScreen(),
       ),
     );
   }
@@ -150,7 +149,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => UploadTask(),
+        builder: (context) => const UploadTask(),
       ),
     );
   }

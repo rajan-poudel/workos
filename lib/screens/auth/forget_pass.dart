@@ -1,9 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:workos/screens/auth/register.dart';
 
 class ForgetPasswordScreen extends StatefulWidget {
   const ForgetPasswordScreen({Key? key}) : super(key: key);
@@ -20,6 +18,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen>
       TextEditingController(text: "");
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  String email = '';
 
   @override
   void dispose() {
@@ -31,7 +30,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen>
   @override
   void initState() {
     _animationController =
-        AnimationController(vsync: this, duration: Duration(seconds: 20));
+        AnimationController(vsync: this, duration: const Duration(seconds: 20));
     _animation =
         CurvedAnimation(parent: _animationController, curve: Curves.linear)
           ..addListener(() {
@@ -49,6 +48,16 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen>
 
   void _forgetPassFCT() async {
     // print("content :${_forgetPassTextController.text}");
+    // Future<DocumentSnapshot<Map<String, dynamic>>> userEmail =
+    //     FirebaseFirestore.instance.collection('user').doc().get();
+    // if (userEmail == null) {
+    // } else {
+    //   setState(() {
+    //     email =userEmail.get('email');
+    //   });
+    // }
+    // try {
+    //   if (email == _forgetPassTextController.text) {
     _auth.sendPasswordResetEmail(email: _forgetPassTextController.text);
     Navigator.canPop(context) ? Navigator.pop(context) : null;
     await Fluttertoast.showToast(
@@ -60,6 +69,11 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen>
       // textColor: Colors.white,
       fontSize: 18.0,
     );
+    //   }
+    // } catch (error) {
+    //   GlobalMethod.showErrorDialog(
+    //       error: "this user cannot cannot have any account", context: context);
+    // }
   }
 
   @override
