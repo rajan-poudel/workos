@@ -88,7 +88,7 @@ class _TasksScreenState extends State<TasksScreen> {
           }
           return const Center(
               child: Text(
-            "Something went Wrong",
+            "No Task yet",
             style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
           ));
         },

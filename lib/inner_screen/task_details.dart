@@ -30,6 +30,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
   TextEditingController _commentController = TextEditingController();
 
   bool _isCommenting = false;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   String? authorName;
   String? authorPosition;
@@ -44,6 +45,9 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
   String? deadLineDate;
   bool isDeadlineAvailable = false;
 
+  //new
+  String? _loggedUserName;
+  String? _loggedInUserImage;
   @override
   void initState() {
     super.initState();
@@ -51,6 +55,20 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
   }
 
   void getTaskData() async {
+    //new to fixed comment bug
+    User? user = _auth.currentUser;
+    final _uid = user!.uid;
+    final DocumentSnapshot getCommenterInfoDoc =
+        await FirebaseFirestore.instance.collection('users').doc(_uid).get();
+    if (getCommenterInfoDoc == null) {
+      return;
+    } else {
+      setState(() {
+        _loggedUserName = getCommenterInfoDoc.get('name');
+        _loggedInUserImage = getCommenterInfoDoc.get('userImage');
+      });
+    }
+
     final DocumentSnapshot userDoc = await FirebaseFirestore.instance
         .collection('users')
         .doc(widget.uploadedBY)
@@ -183,15 +201,6 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                           )
                         ],
                       ),
-                      // SizedBox(
-                      //   height: 15,
-                      // ),
-                      // Divider(
-                      //   thickness: 1,
-                      // ),
-                      // SizedBox(
-                      //   height: 15,
-                      // ),
 
                       _dividerWidget(),
                       Row(
@@ -390,6 +399,8 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                                                       "please enter comment first",
                                                   context: context);
                                             } else {
+                                              User? user = _auth.currentUser;
+                                              final _uid = user!.uid;
                                               var _generatedId = Uuid().v4();
                                               await FirebaseFirestore.instance
                                                   .collection('tasks')
@@ -398,10 +409,11 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                                                 'taskComments':
                                                     FieldValue.arrayUnion([
                                                   {
-                                                    'userId': widget.uploadedBY,
+                                                    'userId': _uid,
                                                     'commentId': _generatedId,
-                                                    'name': authorName,
-                                                    'userImage': userImage,
+                                                    'name': _loggedUserName,
+                                                    'userImage':
+                                                        _loggedInUserImage,
                                                     'commentBody':
                                                         _commentController.text,
                                                     'time': Timestamp.now(),
@@ -479,8 +491,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                               .collection('tasks')
                               .doc(widget.taskId)
                               .get(),
-                          builder: (context,
-                              AsyncSnapshot<DocumentSnapshot> snapshot) {
+                          builder: (context, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
                               return const Center(
