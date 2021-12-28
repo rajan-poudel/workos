@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:workos/constants/constants.dart';
+import 'package:workos/inner_screen/upload_task.dart';
 import 'package:workos/widgets/drawer_widget.dart';
 import 'package:workos/widgets/task_widget.dart';
 
@@ -93,6 +94,20 @@ class _TasksScreenState extends State<TasksScreen> {
           ));
         },
       ),
+      floatingActionButton: FloatingActionButton(
+          elevation: 2,
+          hoverColor: Colors.grey.shade400,
+          // backgroundColor: Colors.black,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          child: Icon(
+            Icons.add,
+            size: 50,
+            color: Constants.darkBlue,
+          ),
+          onPressed: () {
+            Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => const UploadTask()));
+          }),
     );
   }
 
