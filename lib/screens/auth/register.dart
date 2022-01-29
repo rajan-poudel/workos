@@ -156,7 +156,7 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                   style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
-                      fontSize: 30),
+                      fontSize: 34),
                 ),
                 SizedBox(
                   height: size.height * 0.01,
@@ -169,12 +169,12 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                         style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
-                            fontSize: 16),
+                            fontSize: 20),
                       ),
                       // SizedBox(width: 10,), not allowed
                       const TextSpan(text: "   "),
                       TextSpan(
-                        text: 'Login',
+                        text: 'SignIn',
                         recognizer: TapGestureRecognizer()
                           ..onTap = () => Navigator.canPop(context)
                               ? Navigator.pop(context)
@@ -216,7 +216,8 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                               style: const TextStyle(color: Colors.white),
                               decoration: const InputDecoration(
                                 hintText: 'Full Name ',
-                                hintStyle: TextStyle(color: Colors.white),
+                                hintStyle: TextStyle(
+                                    color: Colors.white, fontSize: 20),
                                 enabledBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(color: Colors.white),
                                 ),
@@ -306,7 +307,8 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                         style: TextStyle(color: Colors.white),
                         decoration: const InputDecoration(
                           hintText: 'Enter your Email',
-                          hintStyle: TextStyle(color: Colors.white),
+                          hintStyle:
+                              TextStyle(color: Colors.white, fontSize: 20),
                           enabledBorder: UnderlineInputBorder(
                             borderSide: BorderSide(color: Colors.white),
                           ),
@@ -353,7 +355,8 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                             ),
                           ),
                           hintText: 'Enter your Password',
-                          hintStyle: const TextStyle(color: Colors.white),
+                          hintStyle: const TextStyle(
+                              color: Colors.white, fontSize: 20),
                           enabledBorder: const UnderlineInputBorder(
                             borderSide: BorderSide(color: Colors.white),
                           ),
@@ -390,7 +393,8 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                         style: const TextStyle(color: Colors.white),
                         decoration: const InputDecoration(
                           hintText: 'Phone Number',
-                          hintStyle: TextStyle(color: Colors.white),
+                          hintStyle:
+                              TextStyle(color: Colors.white, fontSize: 20),
                           enabledBorder: UnderlineInputBorder(
                             borderSide: BorderSide(color: Colors.white),
                           ),
@@ -427,7 +431,8 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                           style: const TextStyle(color: Colors.white),
                           decoration: const InputDecoration(
                             hintText: 'Position in the company',
-                            hintStyle: TextStyle(color: Colors.white),
+                            hintStyle:
+                                TextStyle(color: Colors.white, fontSize: 20),
                             enabledBorder: UnderlineInputBorder(
                               borderSide: BorderSide(color: Colors.white),
                             ),

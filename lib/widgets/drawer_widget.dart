@@ -40,7 +40,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                 ),
                 Flexible(
                   child: Text(
-                    "Work OS",
+                    "My Tasks",
                     style: TextStyle(
                         color: Constants.darkBlue,
                         fontStyle: FontStyle.italic,

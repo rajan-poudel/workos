@@ -106,11 +106,11 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                   height: size.height * 0.1,
                 ),
                 const Text(
-                  "login",
+                  "Sign In",
                   style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
-                      fontSize: 30),
+                      fontSize: 34),
                 ),
                 SizedBox(
                   height: size.height * 0.01,
@@ -123,7 +123,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                         style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
-                            fontSize: 16),
+                            fontSize: 20),
                       ),
                       // SizedBox(width: 10,), not allowed
                       const TextSpan(text: "   "),
@@ -138,7 +138,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                             decoration: TextDecoration.underline,
                             color: Colors.blue.shade300,
                             fontWeight: FontWeight.bold,
-                            fontSize: 16),
+                            fontSize: 20),
                       )
                     ],
                   ),
@@ -166,7 +166,8 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                         style: TextStyle(color: Colors.white),
                         decoration: const InputDecoration(
                           hintText: 'Enter your Email',
-                          hintStyle: TextStyle(color: Colors.white),
+                          hintStyle:
+                              TextStyle(color: Colors.white, fontSize: 20),
                           enabledBorder: UnderlineInputBorder(
                             borderSide: BorderSide(color: Colors.white),
                           ),
@@ -210,7 +211,8 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                             ),
                           ),
                           hintText: 'Enter your Password',
-                          hintStyle: const TextStyle(color: Colors.white),
+                          hintStyle: const TextStyle(
+                              color: Colors.white, fontSize: 20),
                           enabledBorder: const UnderlineInputBorder(
                             borderSide: BorderSide(color: Colors.white),
                           ),
@@ -244,7 +246,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                             style: TextStyle(
                               color: Colors.white,
                               decoration: TextDecoration.underline,
-                              fontSize: 17,
+                              fontSize: 20,
                               fontStyle: FontStyle.italic,
                             ))),
                   ],
@@ -264,7 +266,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: const [
                           Text(
-                            "Login",
+                            "Sign In",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 24,
