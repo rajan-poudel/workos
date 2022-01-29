@@ -186,18 +186,16 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                           const SizedBox(
                             width: 5,
                           ),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(authorName == null ? '' : authorName!,
-                                    style: _textStyle),
-                                Text(
-                                  authorPosition == null ? '' : authorPosition!,
-                                  style: _textStyle,
-                                ),
-                              ],
-                            ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(authorName == null ? '' : authorName!,
+                                  style: _textStyle),
+                              Text(
+                                authorPosition == null ? '' : authorPosition!,
+                                style: _textStyle,
+                              ),
+                            ],
                           )
                         ],
                       ),

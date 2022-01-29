@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.workos">
    <application
-        android:label="workos"
+        android:label="My Tasks"
         android:icon="@mipmap/ic_launcher">
         <!-- <uses-permission android:name="android.permission.INTERNET" /> -->
         <activity

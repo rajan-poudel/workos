@@ -28,8 +28,12 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             child: Column(
               children: [
                 Flexible(
-                  child: Image.network(
-                      "https://image.flaticon.com/icons/png/128/390/390973.png"),
+                  // child: Image.network(
+                  //     "https://image.flaticon.com/icons/png/128/390/390973.png"),
+                  child: Image.asset(
+                    "assets/images/task.jpg",
+                    fit: BoxFit.fill,
+                  ),
                 ),
                 const SizedBox(
                   height: 10,
