@@ -143,7 +143,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           Padding(
                             padding: const EdgeInsets.all(5.0),
-                            child: Flexible(
+                            child: Expanded(
                                 child:
                                     userInfo(title: "Email", content: email)),
                           ),

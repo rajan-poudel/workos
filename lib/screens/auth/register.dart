@@ -183,7 +183,7 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                             decoration: TextDecoration.underline,
                             color: Colors.blue.shade300,
                             fontWeight: FontWeight.bold,
-                            fontSize: 16),
+                            fontSize: 20),
                       )
                     ],
                   ),
