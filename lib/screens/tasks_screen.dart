@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:workos/constants/constants.dart';
+import 'package:workos/data/ad_helper.dart';
 import 'package:workos/inner_screen/upload_task.dart';
 import 'package:workos/widgets/drawer_widget.dart';
 import 'package:workos/widgets/task_widget.dart';
@@ -13,7 +15,41 @@ class TasksScreen extends StatefulWidget {
 }
 
 class _TasksScreenState extends State<TasksScreen> {
+  late BannerAd _bottomBannerAd;
+  bool _isBottomBannerAdLoaded = false;
   String? taskCategoryFilter;
+
+  void _createBottomBannerAd() {
+    _bottomBannerAd = BannerAd(
+      adUnitId: AdHelper.bannerAdUnitId,
+      size: AdSize.banner,
+      request: AdRequest(),
+      listener: BannerAdListener(
+        onAdLoaded: (_) {
+          setState(() {
+            _isBottomBannerAdLoaded = true;
+          });
+        },
+        onAdFailedToLoad: (ad, error) {
+          ad.dispose();
+        },
+      ),
+    );
+    _bottomBannerAd.load();
+  }
+
+  @override
+  void initState() {
+    _createBottomBannerAd();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _bottomBannerAd.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -51,6 +87,13 @@ class _TasksScreenState extends State<TasksScreen> {
               ))
         ],
       ),
+      bottomNavigationBar: _isBottomBannerAdLoaded
+          ? Container(
+              height: _bottomBannerAd.size.height.toDouble(),
+              width: _bottomBannerAd.size.width.toDouble(),
+              child: AdWidget(ad: _bottomBannerAd),
+            )
+          : null,
       body: StreamBuilder<QuerySnapshot>(
         stream: taskCategoryFilter == null
             ? FirebaseFirestore.instance

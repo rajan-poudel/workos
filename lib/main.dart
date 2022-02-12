@@ -1,10 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:workos/user_state.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   // await Firebase.initializeApp();
+  MobileAds.instance.initialize();
   runApp(MyApp());
 }
 
