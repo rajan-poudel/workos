@@ -7,6 +7,8 @@ import 'package:workos/inner_screen/upload_task.dart';
 import 'package:workos/widgets/drawer_widget.dart';
 import 'package:workos/widgets/task_widget.dart';
 
+const int maxFailedLoadAttempts = 3;
+
 class TasksScreen extends StatefulWidget {
   const TasksScreen({Key? key}) : super(key: key);
 
@@ -17,6 +19,9 @@ class TasksScreen extends StatefulWidget {
 class _TasksScreenState extends State<TasksScreen> {
   late BannerAd _bottomBannerAd;
   bool _isBottomBannerAdLoaded = false;
+
+  InterstitialAd? _interstitialAd;
+  int _interstitialLoadAttempts = 0;
   String? taskCategoryFilter;
 
   void _createBottomBannerAd() {
@@ -38,15 +43,48 @@ class _TasksScreenState extends State<TasksScreen> {
     _bottomBannerAd.load();
   }
 
+  void _createInterstitialAd() {
+    InterstitialAd.load(
+        adUnitId: AdHelper.interstitialAdUnitId,
+        request: AdRequest(),
+        adLoadCallback:
+            InterstitialAdLoadCallback(onAdLoaded: (InterstitialAd ad) {
+          _interstitialAd = ad;
+          _interstitialLoadAttempts = 0;
+        }, onAdFailedToLoad: (LoadAdError error) {
+          _interstitialLoadAttempts += 1;
+          _interstitialAd = null;
+          if (_interstitialLoadAttempts <= maxFailedLoadAttempts) {
+            _createInterstitialAd();
+          }
+        }));
+  }
+
+  void _showInterstitialAd() {
+    if (_interstitialAd != null) {
+      _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
+          onAdDismissedFullScreenContent: (InterstitialAd ad) {
+        ad.dispose();
+        _createInterstitialAd();
+      }, onAdFailedToShowFullScreenContent: (InterstitialAd ad, AdError error) {
+        ad.dispose();
+        _createInterstitialAd();
+      });
+      _interstitialAd!.show();
+    }
+  }
+
   @override
   void initState() {
     _createBottomBannerAd();
+    _createInterstitialAd();
     super.initState();
   }
 
   @override
   void dispose() {
     _bottomBannerAd.dispose();
+    _interstitialAd?.dispose();
     super.dispose();
   }
 
@@ -148,6 +186,7 @@ class _TasksScreenState extends State<TasksScreen> {
             color: Constants.darkBlue,
           ),
           onPressed: () {
+            _showInterstitialAd();
             Navigator.of(context).push(
                 MaterialPageRoute(builder: (context) => const UploadTask()));
           }),
